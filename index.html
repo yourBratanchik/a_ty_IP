@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>А ты? ♡</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --milk:#FBF6EC;
+  --milk-2:#F3ECDD;
+  --graphite:#2A2723;
+  --graphite-soft:#5A554D;
+  --burgundy:#7A1E2B;
+  --burgundy-deep:#57121C;
+  --burgundy-tint:#F1DADD;
+  --yellow:#F0C33F;
+  --line:#E7DFCC;
+  --white:#FFFFFF;
+  --radius:20px;
+  --radius-sm:12px;
+  --shadow:0 8px 24px rgba(42,39,35,0.08);
+  --shadow-lift:0 14px 34px rgba(122,30,43,0.18);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--milk);
+  background-image:radial-gradient(circle at 12% 8%, rgba(122,30,43,0.05), transparent 40%),
+                    radial-gradient(circle at 90% 90%, rgba(240,195,63,0.10), transparent 45%);
+  color:var(--graphite);
+  font-family:'Manrope',sans-serif;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+h1,h2,h3,.display{font-family:'Unbounded',sans-serif;}
+#app{max-width:480px;margin:0 auto;min-height:100vh;position:relative;padding-bottom:92px;}
+.screen{padding:20px 18px 8px;animation:fadeIn .25s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;}
+input,textarea,select{font-family:inherit;font-size:15px;}
+
+/* ---------- Top bar ---------- */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 18px 4px;}
+.brand{display:flex;align-items:center;gap:8px;}
+.brand-mark{font-family:'Unbounded',sans-serif;font-weight:800;font-size:19px;color:var(--burgundy);}
+.brand-sub{font-size:11px;color:var(--graphite-soft);letter-spacing:.02em;}
+.back-btn{width:36px;height:36px;border-radius:50%;background:var(--white);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--graphite);}
+
+/* ---------- Sticker (meme reaction) ---------- */
+.sticker{
+  display:inline-block;
+  background:var(--yellow);
+  color:var(--graphite);
+  font-weight:700;
+  font-size:13.5px;
+  padding:9px 14px;
+  border-radius:11px;
+  border:2px solid var(--graphite);
+  transform:rotate(-2deg);
+  box-shadow:3px 3px 0 var(--graphite);
+  margin:10px 0;
+  max-width:100%;
+}
+.sticker.pink{background:var(--burgundy-tint);transform:rotate(1.5deg);}
+.sticker.wrap{display:block;width:fit-content;}
+
+/* ---------- Home ---------- */
+.hero{
+  background:linear-gradient(160deg,var(--burgundy) 0%, var(--burgundy-deep) 100%);
+  border-radius:26px;padding:26px 20px 22px;color:var(--milk);position:relative;overflow:hidden;box-shadow:var(--shadow-lift);
+}
+.hero::after{content:"";position:absolute;right:-30px;top:-30px;width:140px;height:140px;background:rgba(240,195,63,0.18);border-radius:50%;}
+.hero-title{font-size:26px;margin:0;font-weight:700;}
+.hero-sub{opacity:.85;font-size:13px;margin-top:4px;}
+.avatars{display:flex;gap:-8px;margin-top:16px;align-items:center;}
+.avatar{
+  width:50px;height:50px;border-radius:50%;background:var(--yellow);
+  display:flex;align-items:center;justify-content:center;font-size:24px;
+  border:3px solid var(--milk);box-shadow:var(--shadow);
+}
+.avatar.small{width:30px;height:30px;font-size:15px;border-width:2px;}
+.avatar-stack{display:flex;}
+.avatar-stack .avatar:nth-child(2){margin-left:-14px;}
+.plus-sign{color:var(--milk);opacity:.6;margin:0 6px;font-size:20px;}
+
+.stat-strip{display:flex;gap:10px;margin-top:18px;}
+.stat-chip{flex:1;background:rgba(255,255,255,0.12);border-radius:14px;padding:10px 8px;text-align:center;}
+.stat-chip b{display:block;font-size:18px;font-family:'Unbounded',sans-serif;}
+.stat-chip span{font-size:10.5px;opacity:.85;}
+
+.qotd-card{
+  margin-top:18px;background:var(--white);border-radius:22px;padding:18px;box-shadow:var(--shadow);border:1.5px solid var(--line);
+}
+.qotd-eyebrow{font-size:11px;font-weight:800;color:var(--burgundy);letter-spacing:.06em;text-transform:uppercase;}
+.qotd-text{font-size:17px;font-weight:700;margin:8px 0 14px;line-height:1.35;}
+.qotd-status{font-size:12.5px;color:var(--graphite-soft);}
+
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px;}
+.quick-tile{
+  background:var(--white);border-radius:18px;padding:16px 14px;box-shadow:var(--shadow);border:1.5px solid var(--line);
+  display:flex;flex-direction:column;gap:8px;
+}
+.quick-tile .ic{font-size:22px;}
+.quick-tile .lb{font-weight:700;font-size:14px;}
+.quick-tile .ct{font-size:11.5px;color:var(--graphite-soft);}
+
+.section-title{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--graphite-soft);margin:26px 0 12px;}
+
+/* ---------- Category / question list ---------- */
+.cat-card{background:var(--white);border-radius:18px;margin-bottom:12px;box-shadow:var(--shadow);border:1.5px solid var(--line);overflow:hidden;}
+.cat-head{display:flex;align-items:center;justify-content:space-between;padding:16px 16px;}
+.cat-name{font-weight:700;font-size:15px;}
+.cat-progress-wrap{height:5px;background:var(--milk-2);border-radius:6px;margin-top:8px;overflow:hidden;}
+.cat-progress{height:100%;background:var(--burgundy);border-radius:6px;}
+.cat-count{font-size:11.5px;color:var(--graphite-soft);margin-top:6px;}
+.chev{font-size:13px;color:var(--graphite-soft);transition:transform .2s;}
+.cat-body{border-top:1px solid var(--line);}
+.q-row{display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid var(--milk-2);}
+.q-row:last-child{border-bottom:none;}
+.q-row-text{flex:1;font-size:13.8px;line-height:1.35;}
+.status-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.status-dot.none{background:#DCD5C4;}
+.status-dot.one{background:var(--yellow);}
+.status-dot.both{background:var(--burgundy);}
+
+/* ---------- Question detail (full screen) ---------- */
+.q-detail-card{background:var(--white);border-radius:22px;padding:20px;box-shadow:var(--shadow);border:1.5px solid var(--line);margin-top:6px;}
+.q-cat-tag{font-size:11px;font-weight:800;color:var(--burgundy);text-transform:uppercase;letter-spacing:.05em;}
+.q-detail-text{font-size:19px;font-weight:700;margin:10px 0 16px;line-height:1.35;}
+textarea.answer-input{
+  width:100%;min-height:110px;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;
+  resize:vertical;font-size:14.5px;background:var(--milk);
+}
+textarea.answer-input:focus{outline:2px solid var(--burgundy);outline-offset:1px;}
+.primary-btn{
+  background:var(--burgundy);color:var(--milk);padding:13px 20px;border-radius:14px;font-weight:700;font-size:14.5px;
+  width:100%;margin-top:12px;box-shadow:0 6px 16px rgba(122,30,43,0.25);
+}
+.primary-btn:disabled{opacity:.45;}
+.secondary-btn{
+  background:var(--white);color:var(--burgundy);border:1.5px solid var(--burgundy);padding:11px 18px;border-radius:14px;
+  font-weight:700;font-size:13.5px;width:100%;margin-top:10px;
+}
+.waiting-box{background:var(--milk-2);border-radius:14px;padding:16px;text-align:center;margin-top:8px;}
+.waiting-box .big{font-size:26px;}
+.answers-compare{display:flex;flex-direction:column;gap:12px;margin-top:8px;}
+.answer-card{border-radius:16px;padding:14px 16px;border:1.5px solid var(--line);}
+.answer-card .who{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px;margin-bottom:6px;}
+.answer-card .txt{font-size:14.5px;line-height:1.4;}
+.answer-card.match{background:var(--burgundy-tint);border-color:var(--burgundy);}
+
+/* ---------- Memories ---------- */
+.mem-card{background:var(--white);border-radius:18px;padding:14px;box-shadow:var(--shadow);border:1.5px solid var(--line);margin-bottom:12px;}
+.mem-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.mem-who{font-weight:700;font-size:13px;}
+.mem-date{font-size:11.5px;color:var(--graphite-soft);margin-left:auto;}
+.mem-text{font-size:14px;line-height:1.4;}
+.mem-photo{width:100%;border-radius:12px;margin-top:10px;display:block;max-height:320px;object-fit:cover;}
+.fab{
+  position:fixed;bottom:104px;left:50%;transform:translateX(180px);
+  width:54px;height:54px;border-radius:50%;background:var(--burgundy);color:var(--milk);font-size:26px;
+  display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-lift);z-index:20;
+}
+
+/* ---------- Forms ---------- */
+.field-label{font-size:12.5px;font-weight:700;color:var(--graphite-soft);margin:14px 0 6px;text-transform:uppercase;letter-spacing:.03em;}
+input.text-input, select.text-input{
+  width:100%;border:1.5px solid var(--line);border-radius:12px;padding:11px 14px;background:var(--white);font-size:14.5px;
+}
+.tabs{display:flex;gap:8px;margin-top:10px;background:var(--milk-2);padding:4px;border-radius:14px;}
+.tab-btn{flex:1;padding:10px;border-radius:11px;font-weight:700;font-size:13px;color:var(--graphite-soft);}
+.tab-btn.active{background:var(--white);color:var(--burgundy);box-shadow:var(--shadow);}
+.chip-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+.chip{
+  background:var(--white);border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;font-size:13.5px;
+  display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;
+}
+.chip button{background:var(--burgundy);color:var(--milk);width:26px;height:26px;border-radius:50%;font-weight:800;flex-shrink:0;}
+
+/* ---------- Stats / Profile ---------- */
+.profile-head{display:flex;flex-direction:column;align-items:center;text-align:center;padding:10px 0 6px;}
+.avatar.big{width:74px;height:74px;font-size:36px;border-width:3px;}
+.avatar-row{display:flex;gap:18px;margin-top:6px;}
+.avatar-col{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.avatar-col .nm{font-weight:700;font-size:13px;}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px;}
+.stat-box{background:var(--white);border-radius:18px;padding:16px;box-shadow:var(--shadow);border:1.5px solid var(--line);text-align:center;}
+.stat-box b{display:block;font-family:'Unbounded',sans-serif;font-size:24px;color:var(--burgundy);}
+.stat-box span{font-size:11.5px;color:var(--graphite-soft);}
+.emoji-pop{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px;background:var(--white);padding:14px;border-radius:16px;box-shadow:var(--shadow);}
+.emoji-opt{font-size:22px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:10px;}
+.emoji-opt:active{background:var(--milk-2);}
+
+/* ---------- Bottom nav ---------- */
+.bottomnav{
+  position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1.5px solid var(--line);
+  display:flex;max-width:480px;margin:0 auto;padding:8px 6px calc(8px + env(safe-area-inset-bottom));z-index:30;
+  box-shadow:0 -6px 20px rgba(42,39,35,0.06);
+}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;color:var(--graphite-soft);}
+.nav-item.active{color:var(--burgundy);}
+.nav-item .ic{font-size:20px;}
+.nav-item .lb{font-size:10.5px;font-weight:700;}
+
+/* ---------- Onboarding ---------- */
+.onb-wrap{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:30px 26px;max-width:480px;margin:0 auto;}
+.onb-logo{font-family:'Unbounded',sans-serif;font-weight:800;font-size:34px;color:var(--burgundy);text-align:center;}
+.onb-sub{text-align:center;color:var(--graphite-soft);font-size:14px;margin-top:8px;}
+.who-grid{display:flex;gap:14px;margin-top:34px;}
+.who-card{
+  flex:1;background:var(--white);border-radius:22px;padding:24px 10px;text-align:center;box-shadow:var(--shadow);
+  border:2px solid var(--line);
+}
+.who-card .em{font-size:38px;}
+.who-card .nm{font-weight:800;font-family:'Unbounded',sans-serif;margin-top:10px;font-size:15px;}
+
+/* misc */
+.empty-state{text-align:center;padding:40px 20px;color:var(--graphite-soft);}
+.empty-state .em{font-size:36px;margin-bottom:8px;}
+.muted{color:var(--graphite-soft);font-size:12.5px;}
+.row-between{display:flex;align-items:center;justify-content:space-between;}
+.toast{
+  position:fixed;bottom:110px;left:50%;transform:translateX(-50%);background:var(--graphite);color:var(--milk);
+  padding:11px 18px;border-radius:14px;font-size:13px;font-weight:600;z-index:50;box-shadow:var(--shadow-lift);
+  max-width:90%;text-align:center;
+}
+.card-plain{background:var(--white);border-radius:18px;padding:16px;box-shadow:var(--shadow);border:1.5px solid var(--line);margin-bottom:12px;}
+.overlay-close{position:fixed;top:16px;right:16px;}
+
+/* ---------- Bell / Feed ---------- */
+.bell-btn{
+  position:absolute;top:20px;right:18px;width:38px;height:38px;border-radius:50%;
+  background:rgba(255,255,255,0.16);display:flex;align-items:center;justify-content:center;
+  font-size:18px;color:var(--milk);
+}
+.bell-badge{
+  position:absolute;top:-3px;right:-3px;background:var(--yellow);color:var(--graphite);
+  font-size:10px;font-weight:800;min-width:17px;height:17px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;border:2px solid var(--burgundy-deep);padding:0 3px;
+}
+.feed-item{display:flex;gap:12px;padding:14px 4px;border-bottom:1px solid var(--line);}
+.feed-item:last-child{border-bottom:none;}
+.feed-ic{width:38px;height:38px;border-radius:50%;background:var(--milk-2);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.feed-txt{font-size:13.8px;line-height:1.4;}
+.feed-txt b{font-weight:800;}
+.feed-time{font-size:11px;color:var(--graphite-soft);margin-top:3px;}
+.feed-item.unread .feed-txt{font-weight:600;}
+.feed-item.unread{background:var(--milk-2);border-radius:14px;}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* ============ DATA ============ */
+const BASE_QUESTIONS = [{"id": 1, "cat": "Узнать друг друга лучше", "text": "Какой твой любимый мультик? Почему?"}, {"id": 2, "cat": "Узнать друг друга лучше", "text": "Что тебя раздражает?"}, {"id": 3, "cat": "Узнать друг друга лучше", "text": "Когда ты — это и есть по-настоящему ты?"}, {"id": 4, "cat": "Узнать друг друга лучше", "text": "Каким видишь себя через 5 лет?"}, {"id": 5, "cat": "Узнать друг друга лучше", "text": "Каким ты видишь себя через 10 лет?"}, {"id": 6, "cat": "Узнать друг друга лучше", "text": "Самый страшный момент из твоей жизни?"}, {"id": 7, "cat": "Узнать друг друга лучше", "text": "Какой любимый жанр в фильмах?"}, {"id": 8, "cat": "Узнать друг друга лучше", "text": "Какой был твой любимый предмет в школе/университете?"}, {"id": 9, "cat": "Узнать друг друга лучше", "text": "За что тебе до сих пор стыдно?"}, {"id": 10, "cat": "Узнать друг друга лучше", "text": "Есть ли то, о чём ты жалеешь?"}, {"id": 11, "cat": "Узнать друг друга лучше", "text": "Что может в корне изменить твоё мнение о каком-либо человеке — как в худшую, так и в лучшую сторону?"}, {"id": 12, "cat": "Узнать друг друга лучше", "text": "Как справляешься с внезапной грустью?"}, {"id": 13, "cat": "Узнать друг друга лучше", "text": "Какой твой любимый праздник?"}, {"id": 14, "cat": "Узнать друг друга лучше", "text": "Нравится ли тебе твоё имя?"}, {"id": 15, "cat": "Узнать друг друга лучше", "text": "Котики или собачки?"}, {"id": 16, "cat": "Узнать друг друга лучше", "text": "Какой самый безбашенный поступок в твоей жизни?"}, {"id": 17, "cat": "Узнать друг друга лучше", "text": "Есть ли идеал, к которому ты стремишься? Опиши."}, {"id": 18, "cat": "Узнать друг друга лучше", "text": "Какой самый ценный жизненный урок ты получил(а)?"}, {"id": 19, "cat": "Узнать друг друга лучше", "text": "Какой чертой своего характера ты гордишься?"}, {"id": 20, "cat": "Узнать друг друга лучше", "text": "Веришь ли ты в сверхъестественное?"}, {"id": 21, "cat": "Узнать друг друга лучше", "text": "Что тебя раздражает в людях?"}, {"id": 22, "cat": "Узнать друг друга лучше", "text": "Над чем ты в последний раз плакал(а)?"}, {"id": 23, "cat": "Узнать друг друга лучше", "text": "Какие твои черты характера могут не нравиться людям?"}, {"id": 24, "cat": "Узнать друг друга лучше", "text": "Комплексуешь ли ты по поводу чего-нибудь?"}, {"id": 25, "cat": "Узнать друг друга лучше", "text": "Ты считаешь себя интровертом или экстравертом?"}, {"id": 26, "cat": "Узнать друг друга лучше", "text": "Ты жаворонок или сова? Какое время суток твоё любимое?"}, {"id": 27, "cat": "Узнать друг друга лучше", "text": "Охарактеризируй круг своих самых близких друзей."}, {"id": 28, "cat": "Детство, семья и прошлое", "text": "Какая любимая игрушка или игра была у тебя в детстве?"}, {"id": 29, "cat": "Детство, семья и прошлое", "text": "Какие фильмы или мультфильмы тебе очень нравились?"}, {"id": 30, "cat": "Детство, семья и прошлое", "text": "Какие блюда ты любил(а) в детстве? Кто их готовил?"}, {"id": 31, "cat": "Детство, семья и прошлое", "text": "Был ли у тебя старший друг, который оказал на тебя влияние?"}, {"id": 32, "cat": "Детство, семья и прошлое", "text": "Как ты проводил(а) время после школы?"}, {"id": 33, "cat": "Детство, семья и прошлое", "text": "Чего тебе в детстве очень не хватало?"}, {"id": 34, "cat": "Детство, семья и прошлое", "text": "Кем ты мечтал(а) стать в дошкольном возрасте?"}, {"id": 35, "cat": "Детство, семья и прошлое", "text": "У тебя были лучшие друзья в детстве? Что вы обычно делали вместе?"}, {"id": 36, "cat": "Детство, семья и прошлое", "text": "Когда ты был(а) ребёнком, что тебе жутко нравилось в себе?"}, {"id": 37, "cat": "Детство, семья и прошлое", "text": "Какие яркие события детства запомнились сильнее остальных?"}, {"id": 38, "cat": "Детство, семья и прошлое", "text": "Были ли у тебя какие-то хобби или коллекции?"}, {"id": 39, "cat": "Детство, семья и прошлое", "text": "У тебя был любимый супергерой или вымышленный персонаж?"}, {"id": 40, "cat": "Детство, семья и прошлое", "text": "В чём ты похож(а) на маму и тебе это нравится? А чем не нравится?"}, {"id": 41, "cat": "Детство, семья и прошлое", "text": "В чём ты похож(а) на папу и тебе это нравится? А чем не нравится?"}, {"id": 42, "cat": "Детство, семья и прошлое", "text": "За что ты благодарен(на) родителям?"}, {"id": 43, "cat": "Детство, семья и прошлое", "text": "Назови три ценности твоей семьи, которыми ты дорожил(а) в детстве."}, {"id": 44, "cat": "Детство, семья и прошлое", "text": "Какой совет из детства ты бы дал(а) себе взрослому?"}, {"id": 45, "cat": "Детство, семья и прошлое", "text": "Как твоя семья отмечала праздники? Были ли особенные семейные традиции?"}, {"id": 46, "cat": "Детство, семья и прошлое", "text": "О чём ты мечтал(а), когда был(а) ребёнком?"}, {"id": 47, "cat": "Детство, семья и прошлое", "text": "Кто был твоей первой любовью?"}, {"id": 48, "cat": "Детство, семья и прошлое", "text": "Какая песня ассоциируется у тебя с детством?"}, {"id": 49, "cat": "Детство, семья и прошлое", "text": "Какое самое любимое место в городе?"}, {"id": 50, "cat": "Детство, семья и прошлое", "text": "Есть ли человек, перед которым тебе хотелось бы извиниться? За что?"}, {"id": 51, "cat": "Детство, семья и прошлое", "text": "Расскажи о своём первом месте работы."}, {"id": 52, "cat": "Детство, семья и прошлое", "text": "За что ты обижаешься или когда-то обижался(ась) на родителей?"}, {"id": 53, "cat": "Детство, семья и прошлое", "text": "Ты когда-нибудь терял(а) близкого тебе человека? Если да, то кто это был и когда?"}, {"id": 54, "cat": "Жизнь, ценности, мечты и интересы", "text": "Какие 3–5 вещей являются для тебя абсолютным приоритетом в жизни?"}, {"id": 55, "cat": "Жизнь, ценности, мечты и интересы", "text": "Какие три главных удовольствия в твоей жизни?"}, {"id": 56, "cat": "Жизнь, ценности, мечты и интересы", "text": "Какая твоя основная жизненная философия?"}, {"id": 57, "cat": "Жизнь, ценности, мечты и интересы", "text": "Когда ты впервые осознал(а) эту философию и применил(а) её?"}, {"id": 58, "cat": "Жизнь, ценности, мечты и интересы", "text": "Что для тебя самое важное в жизни?"}, {"id": 59, "cat": "Жизнь, ценности, мечты и интересы", "text": "Какие у тебя самые ценные воспоминания из детства?"}, {"id": 60, "cat": "Жизнь, ценности, мечты и интересы", "text": "Каким человеком ты хотел(а) бы быть?"}, {"id": 61, "cat": "Жизнь, ценности, мечты и интересы", "text": "О чём ты мечтаешь?"}, {"id": 62, "cat": "Жизнь, ценности, мечты и интересы", "text": "Топ-3 твоих мечты."}, {"id": 63, "cat": "Жизнь, ценности, мечты и интересы", "text": "Кем ты хотел(а) стать в детстве?"}, {"id": 64, "cat": "Жизнь, ценности, мечты и интересы", "text": "Какая у тебя личная цель и как я могу тебя в этом поддержать?"}, {"id": 65, "cat": "Жизнь, ценности, мечты и интересы", "text": "Каким навыком ты бы хотел(а) владеть в совершенстве?"}, {"id": 66, "cat": "Жизнь, ценности, мечты и интересы", "text": "Куда бы ты хотел(а) поехать?"}, {"id": 67, "cat": "Жизнь, ценности, мечты и интересы", "text": "В какой стране ты хотел(а) бы побывать?"}, {"id": 68, "cat": "Жизнь, ценности, мечты и интересы", "text": "Жить в оживлённом городе или в отдалённой местности?"}, {"id": 69, "cat": "Жизнь, ценности, мечты и интересы", "text": "Как бы выглядел дом твоей мечты?"}, {"id": 70, "cat": "Жизнь, ценности, мечты и интересы", "text": "Чем ты любишь заниматься в свободное время?"}, {"id": 71, "cat": "Жизнь, ценности, мечты и интересы", "text": "Есть ли у тебя какие-то хобби, о которых я не знаю?"}, {"id": 72, "cat": "Жизнь, ценности, мечты и интересы", "text": "Какую музыку ты любишь слушать?"}, {"id": 73, "cat": "Жизнь, ценности, мечты и интересы", "text": "Какие фильмы или сериалы тебе нравятся?"}, {"id": 74, "cat": "Жизнь, ценности, мечты и интересы", "text": "Какую книгу ты бы порекомендовал(а) мне прочитать?"}, {"id": 75, "cat": "Жизнь, ценности, мечты и интересы", "text": "Есть ли у тебя таланты, которые хочется развивать?"}, {"id": 76, "cat": "Жизнь, ценности, мечты и интересы", "text": "Какая песня или фильм напоминают тебе о нас?"}, {"id": 77, "cat": "Жизнь, ценности, мечты и интересы", "text": "Если бы ты мог(ла) в следующей жизни стать любым животным, каким бы стал(а)? Почему?"}, {"id": 78, "cat": "Жизнь, ценности, мечты и интересы", "text": "Чай или кофе?"}, {"id": 79, "cat": "Жизнь, ценности, мечты и интересы", "text": "Что ты больше любишь — день или ночь?"}, {"id": 80, "cat": "Жизнь, ценности, мечты и интересы", "text": "Как справляешься со стрессом?"}, {"id": 81, "cat": "Любовь и чувства", "text": "Что для тебя означает любовь?"}, {"id": 82, "cat": "Любовь и чувства", "text": "Как ты проявляешь свою любовь?"}, {"id": 83, "cat": "Любовь и чувства", "text": "Когда ты чувствуешь себя особенно любимым(ой)?"}, {"id": 84, "cat": "Любовь и чувства", "text": "Когда ты ощущаешь мою любовь к тебе?"}, {"id": 85, "cat": "Любовь и чувства", "text": "Ты чувствуешь мою любовь?"}, {"id": 86, "cat": "Любовь и чувства", "text": "В какие моменты ты чувствуешь, что я тебя люблю?"}, {"id": 87, "cat": "Любовь и чувства", "text": "Что тебя заставляет влюбляться в меня снова и снова?"}, {"id": 88, "cat": "Любовь и чувства", "text": "Как ты понял(а), что любишь меня?"}, {"id": 89, "cat": "Любовь и чувства", "text": "Что ты чувствуешь, когда я рядом с тобой?"}, {"id": 90, "cat": "Любовь и чувства", "text": "Что тебе больше всего нравится во мне?"}, {"id": 91, "cat": "Любовь и чувства", "text": "Назови пять вещей, которые тебе нравятся во мне."}, {"id": 92, "cat": "Любовь и чувства", "text": "Что тебя во мне привлекло?"}, {"id": 93, "cat": "Любовь и чувства", "text": "Что меня отличает от других?"}, {"id": 94, "cat": "Любовь и чувства", "text": "Что ты подумал(а) при нашей первой встрече?"}, {"id": 95, "cat": "Любовь и чувства", "text": "Какое первое впечатление я произвела на тебя?"}, {"id": 96, "cat": "Любовь и чувства", "text": "Что первое обо мне ты рассказал(а) своим друзьям?"}, {"id": 97, "cat": "Любовь и чувства", "text": "Как ты опишешь моё лицо человеку, который никогда в жизни меня не видел?"}, {"id": 98, "cat": "Любовь и чувства", "text": "Опиши меня тремя словами."}, {"id": 99, "cat": "Любовь и чувства", "text": "Какие слова, сказанные мной, ты запомнишь надолго?"}, {"id": 100, "cat": "Любовь и чувства", "text": "Какие мои слова тебя раздражают больше всего?"}, {"id": 101, "cat": "Любовь и чувства", "text": "Что я делаю такого, после чего ты думаешь: «Как же я её люблю»?"}, {"id": 102, "cat": "Любовь и чувства", "text": "Какое у тебя любимое воспоминание о нас?"}, {"id": 103, "cat": "Любовь и чувства", "text": "Самый запоминающийся момент со мной?"}, {"id": 104, "cat": "Любовь и чувства", "text": "Что самое приятное я делал(а) для тебя?"}, {"id": 105, "cat": "Любовь и чувства", "text": "Что изменилось в твоей жизни после нашей встречи?"}, {"id": 106, "cat": "Любовь и чувства", "text": "Как ты изменился(лась) за время наших отношений?"}, {"id": 107, "cat": "Любовь и чувства", "text": "Что в наших отношениях приносит тебе наибольшую радость?"}, {"id": 108, "cat": "Любовь и чувства", "text": "Что тебе больше всего нравится в наших отношениях?"}, {"id": 109, "cat": "Любовь и чувства", "text": "Что тебе больше всего не нравится в наших отношениях?"}, {"id": 110, "cat": "Любовь и чувства", "text": "Что тебя тревожит в наших отношениях?"}, {"id": 111, "cat": "Любовь и чувства", "text": "Что тебе не хватает в наших отношениях?"}, {"id": 112, "cat": "Любовь и чувства", "text": "За что ты мне благодарен(на)?"}, {"id": 113, "cat": "Любовь и чувства", "text": "Что ты больше всего ценишь во мне?"}, {"id": 114, "cat": "Любовь и чувства", "text": "Как я могу сделать тебя счастливее?"}, {"id": 115, "cat": "Любовь и чувства", "text": "Что я могу делать чаще, чтобы радовать тебя?"}, {"id": 116, "cat": "Любовь и чувства", "text": "Что бы ты хотел(а), чтобы я делал(а) чаще или реже?"}, {"id": 117, "cat": "Любовь и чувства", "text": "Какой маленький поступок я могу делать каждый день, чтобы радовать тебя?"}, {"id": 118, "cat": "Любовь и чувства", "text": "Что тебе хотелось бы попробовать сделать вместе?"}, {"id": 119, "cat": "Любовь и чувства", "text": "Какие вещи ты больше всего любишь делать со мной?"}, {"id": 120, "cat": "Общение, поддержка и конфликты", "text": "Ты считаешь, что мы открыты друг другу?"}, {"id": 121, "cat": "Общение, поддержка и конфликты", "text": "Чувствуешь ли ты, что можешь быть искренним(ей) рядом со мной?"}, {"id": 122, "cat": "Общение, поддержка и конфликты", "text": "Чувствуешь ли ты, что мы достаточно часто говорим о своих чувствах?"}, {"id": 123, "cat": "Общение, поддержка и конфликты", "text": "Чувствуешь ли ты мою поддержку?"}, {"id": 124, "cat": "Общение, поддержка и конфликты", "text": "Как я могу лучше всего поддержать тебя?"}, {"id": 125, "cat": "Общение, поддержка и конфликты", "text": "Когда тебе грустно или ты злишься, хочешь, чтобы я была рядом? Как мне вести себя в эти моменты?"}, {"id": 126, "cat": "Общение, поддержка и конфликты", "text": "Если у тебя плохое настроение, ты предпочитаешь, чтобы тебя оставили в покое или чтобы кто-то тебя подбодрил?"}, {"id": 127, "cat": "Общение, поддержка и конфликты", "text": "Как лучше всего поднять тебе настроение в плохой день?"}, {"id": 128, "cat": "Общение, поддержка и конфликты", "text": "Что тебя раздражает в наших разговорах?"}, {"id": 129, "cat": "Общение, поддержка и конфликты", "text": "Тебе нравятся наши разговоры или они тебя отвлекают?"}, {"id": 130, "cat": "Общение, поддержка и конфликты", "text": "Как ты обычно справляешься со стрессовыми ситуациями и как я могу лучше всего поддержать тебя в эти периоды?"}, {"id": 131, "cat": "Общение, поддержка и конфликты", "text": "Что ты чувствуешь, когда мы ссоримся?"}, {"id": 132, "cat": "Общение, поддержка и конфликты", "text": "Что ты чувствуешь в момент, когда мы в ссоре?"}, {"id": 133, "cat": "Общение, поддержка и конфликты", "text": "Какой подход ты считаешь наиболее эффективным для разрешения конфликтов в отношениях?"}, {"id": 134, "cat": "Общение, поддержка и конфликты", "text": "С чем нам, на твой взгляд, нужно поработать в отношениях?"}, {"id": 135, "cat": "Общение, поддержка и конфликты", "text": "Как ты думаешь, что делает наши отношения крепкими?"}, {"id": 136, "cat": "Общение, поддержка и конфликты", "text": "Как нам удаётся сохранять любовь и страсть в отношениях на протяжении долгих лет?"}, {"id": 137, "cat": "Общение, поддержка и конфликты", "text": "Чувствуешь ли ты, что мы можем открыто говорить друг другу о любых проблемах?"}, {"id": 138, "cat": "Общение, поддержка и конфликты", "text": "Есть ли у тебя какая-то проблема или переживание, о котором я не знаю?"}, {"id": 139, "cat": "Общение, поддержка и конфликты", "text": "Есть ли такая вещь, которую ты не можешь мне сказать?"}, {"id": 140, "cat": "Общение, поддержка и конфликты", "text": "Что бы ты сделал(а), если бы я пропала на несколько дней без объяснения?"}, {"id": 141, "cat": "Общение, поддержка и конфликты", "text": "Если я напишу «только не злись…», что ты подумаешь, у меня произошло?"}, {"id": 142, "cat": "Общение, поддержка и конфликты", "text": "Если бы ты мог(ла) запретить мне делать что-то одно, что бы это было?"}, {"id": 143, "cat": "Общение, поддержка и конфликты", "text": "Как ты понимаешь, когда я злюсь или обижаюсь?"}, {"id": 144, "cat": "Общение, поддержка и конфликты", "text": "Как ты думаешь, что во мне останется неизменным даже спустя 20 лет?"}, {"id": 145, "cat": "Наша пара, совместная жизнь и будущее", "text": "Если бы у тебя был выбор, ты бы выбрал(а) меня снова?"}, {"id": 146, "cat": "Наша пара, совместная жизнь и будущее", "text": "Что ты видишь в нашем будущем?"}, {"id": 147, "cat": "Наша пара, совместная жизнь и будущее", "text": "Как ты видишь нашу жизнь через 10 лет?"}, {"id": 148, "cat": "Наша пара, совместная жизнь и будущее", "text": "Как ты себе представляешь нашу совместную жизнь?"}, {"id": 149, "cat": "Наша пара, совместная жизнь и будущее", "text": "Как выглядит в твоих глазах картина нашего идеального будущего?"}, {"id": 150, "cat": "Наша пара, совместная жизнь и будущее", "text": "Какие у тебя надежды и мечты на будущее нашей семьи?"}, {"id": 151, "cat": "Наша пара, совместная жизнь и будущее", "text": "Как ты описал(а) бы нашу с тобой связь?"}, {"id": 152, "cat": "Наша пара, совместная жизнь и будущее", "text": "Насколько мы близки?"}, {"id": 153, "cat": "Наша пара, совместная жизнь и будущее", "text": "В чём мы похожи?"}, {"id": 154, "cat": "Наша пара, совместная жизнь и будущее", "text": "В каких трёх вещах мы с тобой похожи?"}, {"id": 155, "cat": "Наша пара, совместная жизнь и будущее", "text": "Назови три вещи, которые нас объединяют."}, {"id": 156, "cat": "Наша пара, совместная жизнь и будущее", "text": "Назови три вещи, которые нас разделяют."}, {"id": 157, "cat": "Наша пара, совместная жизнь и будущее", "text": "В наших отношениях ты стал(а) лучше? Как считаешь?"}, {"id": 158, "cat": "Наша пара, совместная жизнь и будущее", "text": "Что, по-твоему, улучшилось в наших отношениях в последнее время?"}, {"id": 159, "cat": "Наша пара, совместная жизнь и будущее", "text": "Как мы можем создать среду, в которой оба будем чувствовать себя в безопасности, выражая свои потребности?"}, {"id": 160, "cat": "Наша пара, совместная жизнь и будущее", "text": "Какие способы проводить время вместе тебе больше всего нравятся?"}, {"id": 161, "cat": "Наша пара, совместная жизнь и будущее", "text": "Какие приятные ритуалы ты хотел(а) бы добавить нашей паре?"}, {"id": 162, "cat": "Наша пара, совместная жизнь и будущее", "text": "Какое идеальное свидание для нас ты можешь придумать?"}, {"id": 163, "cat": "Наша пара, совместная жизнь и будущее", "text": "Какие выходные для тебя идеальны?"}, {"id": 164, "cat": "Наша пара, совместная жизнь и будущее", "text": "Какую самую креативную идею для свидания ты можешь придумать?"}, {"id": 165, "cat": "Наша пара, совместная жизнь и будущее", "text": "Что бы ты хотел(а) сделать вместе?"}, {"id": 166, "cat": "Наша пара, совместная жизнь и будущее", "text": "Какой день со мной был самым счастливым за год?"}, {"id": 167, "cat": "Наша пара, совместная жизнь и будущее", "text": "Какой день из наших отношений ты бы хотел(а) повторить?"}, {"id": 168, "cat": "Наша пара, совместная жизнь и будущее", "text": "Если бы нам осталось жить один год, что бы мы делали?"}, {"id": 169, "cat": "Наша пара, совместная жизнь и будущее", "text": "Какой из дней ты бы провёл(а) со мной снова? И почему?"}, {"id": 170, "cat": "Наша пара, совместная жизнь и будущее", "text": "Какую нашу ночь ты бы выбрал(а), чтобы повторить?"}, {"id": 171, "cat": "Ревность, границы и измена", "text": "Как ты относишься к измене?"}, {"id": 172, "cat": "Ревность, границы и измена", "text": "Что для тебя измена?"}, {"id": 173, "cat": "Ревность, границы и измена", "text": "Что ты считаешь изменой?"}, {"id": 174, "cat": "Ревность, границы и измена", "text": "Считаешь ли возможным для себя изменить партнёру?"}, {"id": 175, "cat": "Ревность, границы и измена", "text": "Что бы ты сделал(а), осознав, что начинаешь испытывать сильные чувства к другому человеку, будучи в отношениях?"}, {"id": 176, "cat": "Ревность, границы и измена", "text": "Веришь ли ты в возможность чистой дружбы между мужчиной и женщиной?"}, {"id": 177, "cat": "Ревность, границы и измена", "text": "Возможна ли дружба между мужчиной и женщиной?"}, {"id": 178, "cat": "Ревность, границы и измена", "text": "Считаешь ли ты себя ревнивым человеком? Если да, то насколько?"}, {"id": 179, "cat": "Ревность, границы и измена", "text": "Насколько ты ревнивый(ая)?"}, {"id": 180, "cat": "Ревность, границы и измена", "text": "Что ты чувствуешь, когда видишь человека с лучшей фигурой, чем у твоего партнёра?"}, {"id": 181, "cat": "Ревность, границы и измена", "text": "Если бы ты увидел(а), что со мной кто-то флиртует, как бы ты отреагировал(а)?"}, {"id": 182, "cat": "Ревность, границы и измена", "text": "Если бы твоя семья была против меня, ты бы всё равно выбрал(а) меня?"}, {"id": 183, "cat": "Ревность, границы и измена", "text": "Как бы ты поступил(а), если бы твой(я) бывший(ая), зная, что ты в отношениях, предложил(а) возобновить прошлые отношения?"}, {"id": 184, "cat": "Ревность, границы и измена", "text": "Что бы ты сделал(а), если бы я пропала на несколько дней без объяснения?"}, {"id": 185, "cat": "Ревность, границы и измена", "text": "Есть ли что-то, что ты мне никогда не простишь?"}, {"id": 186, "cat": "Ревность, границы и измена", "text": "За какие поступки ты никогда не простишь человека?"}, {"id": 187, "cat": "Ревность, границы и измена", "text": "Был(а) ли ты готов(а) встречаться с бисексуальным человеком?"}, {"id": 188, "cat": "Близость и 18+", "text": "Что тебя заводит в переписке?"}, {"id": 189, "cat": "Близость и 18+", "text": "Какая часть твоего тела самая чувствительная?"}, {"id": 190, "cat": "Близость и 18+", "text": "Что тебе больше всего нравится во время нашей близости?"}, {"id": 191, "cat": "Близость и 18+", "text": "Если бы мы могли повторить одну нашу ночь, какую бы ты выбрал(а)?"}, {"id": 192, "cat": "Близость и 18+", "text": "Какое слово на ушко заставит тебя потерять контроль?"}, {"id": 193, "cat": "Близость и 18+", "text": "Если бы ты мог(ла) поцеловать меня только в одно место, то куда?"}, {"id": 194, "cat": "Близость и 18+", "text": "Что бы ты сделал(а), если бы я открыла тебе дверь без одежды?"}, {"id": 195, "cat": "Близость и 18+", "text": "Быстро или медленно?"}, {"id": 196, "cat": "Близость и 18+", "text": "Что тебя заводит?"}, {"id": 197, "cat": "Близость и 18+", "text": "Что тебе больше всего нравится/не нравится в интимной близости?"}, {"id": 198, "cat": "Лёгкие, игровые и неожиданные вопросы", "text": "Потанцевал(а) бы со мной?"}, {"id": 199, "cat": "Лёгкие, игровые и неожиданные вопросы", "text": "Что больше нравится: шоколад или цветы?"}, {"id": 200, "cat": "Лёгкие, игровые и неожиданные вопросы", "text": "Любимый праздник?"}, {"id": 201, "cat": "Лёгкие, игровые и неожиданные вопросы", "text": "Котики или собачки?"}, {"id": 202, "cat": "Лёгкие, игровые и неожиданные вопросы", "text": "Чай или кофе?"}, {"id": 203, "cat": "Лёгкие, игровые и неожиданные вопросы", "text": "Если бы у тебя был выбор, ты бы выбрал(а) меня снова?"}, {"id": 204, "cat": "Лёгкие, игровые и неожиданные вопросы", "text": "Если бы ты мог(ла) в следующей жизни стать любым животным, каким бы стал(а)? Почему?"}, {"id": 205, "cat": "Лёгкие, игровые и неожиданные вопросы", "text": "Что ты предпочитаешь: один большой сюрприз или маленькие сюрпризы каждый день?"}, {"id": 206, "cat": "Лёгкие, игровые и неожиданные вопросы", "text": "Неожиданный сюрприз или запланированный подарок?"}, {"id": 207, "cat": "Лёгкие, игровые и неожиданные вопросы", "text": "Комплимент внешности или комплимент характеру?"}, {"id": 208, "cat": "Лёгкие, игровые и неожиданные вопросы", "text": "Разные компании с партнёром или общие друзья с партнёром?"}, {"id": 209, "cat": "Лёгкие, игровые и неожиданные вопросы", "text": "Совместно решать финансовые вопросы или каждый распоряжается своими средствами?"}, {"id": 210, "cat": "Лёгкие, игровые и неожиданные вопросы", "text": "Писать милые записки или отправлять смешные мемы?"}, {"id": 211, "cat": "Лёгкие, игровые и неожиданные вопросы", "text": "Секс без любви или любовь без секса?"}, {"id": 212, "cat": "Лёгкие, игровые и неожиданные вопросы", "text": "Умереть в одиночестве или прожить жизнь с нелюбимым человеком?"}, {"id": 213, "cat": "Лёгкие, игровые и неожиданные вопросы", "text": "Ваш партнёр вас презирает или ваши дети вас ненавидят?"}, {"id": 214, "cat": "Лёгкие, игровые и неожиданные вопросы", "text": "Финансовая зависимость от партнёра или эмоциональная зависимость от партнёра?"}, {"id": 215, "cat": "Отношения и ожидания от партнёра", "text": "Какие 3–5 вещей являются для тебя абсолютным приоритетом во внешности и характере партнёра?"}, {"id": 216, "cat": "Отношения и ожидания от партнёра", "text": "Какой у тебя идеальный типаж: внешность и ключевые черты характера партнёра?"}, {"id": 217, "cat": "Отношения и ожидания от партнёра", "text": "Что для тебя означает любовь?"}, {"id": 218, "cat": "Отношения и ожидания от партнёра", "text": "Как ты относишься к несерьёзным отношениям? Открыт(а) ли ты для них?"}, {"id": 219, "cat": "Отношения и ожидания от партнёра", "text": "Как ты относишься к поцелуям и физической близости на ранних этапах знакомства, когда вы ещё мало знаете друг друга?"}, {"id": 220, "cat": "Отношения и ожидания от партнёра", "text": "Часто ли ты делаешь подарки партнёру — от небольших сюрпризов до дорогих, например цветов?"}, {"id": 221, "cat": "Отношения и ожидания от партнёра", "text": "Как, по твоему мнению, должны распределяться домашние обязанности в паре?"}, {"id": 222, "cat": "Отношения и ожидания от партнёра", "text": "Как ты обычно проявляешь свою любовь и заботу? И как тебе самому(ой) приятнее всего получать знаки внимания и любовь?"}, {"id": 223, "cat": "Отношения и ожидания от партнёра", "text": "Какое первое впечатление было обо мне?"}, {"id": 224, "cat": "Отношения и ожидания от партнёра", "text": "Какие качества во мне тебе больше всего нравятся и не нравятся?"}, {"id": 225, "cat": "Отношения и ожидания от партнёра", "text": "Что тебя во мне привлекло?"}, {"id": 226, "cat": "Отношения и ожидания от партнёра", "text": "Чего тебе не хватает в наших отношениях?"}, {"id": 227, "cat": "Отношения и ожидания от партнёра", "text": "Что может сделать тебя ещё счастливее?"}, {"id": 228, "cat": "Отношения и ожидания от партнёра", "text": "Тебя устраивает моё отношение к тебе?"}, {"id": 229, "cat": "Отношения и ожидания от партнёра", "text": "Тебе нравится, когда я называю тебя женой? Как ещё тебе нравится?"}, {"id": 230, "cat": "Отношения и ожидания от партнёра", "text": "Что ты думаешь о лучших друзьях противоположного пола?"}, {"id": 231, "cat": "Личные, глубокие и уязвимые вопросы", "text": "Что тебя волнует больше всего сейчас?"}, {"id": 232, "cat": "Личные, глубокие и уязвимые вопросы", "text": "Чего ты боишься больше всего в жизни?"}, {"id": 233, "cat": "Личные, глубокие и уязвимые вопросы", "text": "Какой твой самый большой страх относительно нас?"}, {"id": 234, "cat": "Личные, глубокие и уязвимые вопросы", "text": "Что ты боишься потерять в наших отношениях?"}, {"id": 235, "cat": "Личные, глубокие и уязвимые вопросы", "text": "Что тебе в себе нравится больше всего?"}, {"id": 236, "cat": "Личные, глубокие и уязвимые вопросы", "text": "Что тебе в себе не нравится?"}, {"id": 237, "cat": "Личные, глубокие и уязвимые вопросы", "text": "Что бы ты хотел(а) изменить в себе физически?"}, {"id": 238, "cat": "Личные, глубокие и уязвимые вопросы", "text": "Что бы ты изменил(а) в себе духовно или эмоционально?"}, {"id": 239, "cat": "Личные, глубокие и уязвимые вопросы", "text": "Какой момент, который изменил твою жизнь, приходит тебе в голову в первую очередь?"}, {"id": 240, "cat": "Личные, глубокие и уязвимые вопросы", "text": "Ты религиозный человек? Какие у тебя убеждения?"}, {"id": 241, "cat": "Личные, глубокие и уязвимые вопросы", "text": "Веришь ли ты в Бога?"}, {"id": 242, "cat": "Личные, глубокие и уязвимые вопросы", "text": "Как ты думаешь, что во мне останется неизменным даже спустя 20 лет?"}, {"id": 243, "cat": "Личные, глубокие и уязвимые вопросы", "text": "Какой самый счастливый момент в твоей жизни?"}, {"id": 244, "cat": "Личные, глубокие и уязвимые вопросы", "text": "Что может изменить твоё мнение о человеке?"}, {"id": 245, "cat": "Личные, глубокие и уязвимые вопросы", "text": "Есть ли у тебя человек, перед которым хотелось бы извиниться? За что?"}, {"id": 246, "cat": "Личные, глубокие и уязвимые вопросы", "text": "Когда ты в последний раз чувствовал(а) себя по-настоящему счастливым(ой)?"}, {"id": 247, "cat": "Личные, глубокие и уязвимые вопросы", "text": "Из-за чего ты в последний раз чувствовал(а) себя плохо?"}, {"id": 248, "cat": "Личные, глубокие и уязвимые вопросы", "text": "Как ты справляешься с внезапной грустью?"}, {"id": 249, "cat": "Личные, глубокие и уязвимые вопросы", "text": "Что для тебя самое важное в жизни?"}, {"id": 250, "cat": "Личные, глубокие и уязвимые вопросы", "text": "Примечание по исходному файлу"}, {"id": 251, "cat": "Личные, глубокие и уязвимые вопросы", "text": "В PDF часть страниц представляет собой скриншоты социальных сетей и изображений с мелким текстом. Поэтому отдельные фрагменты, которые технически невозможно уверенно прочитать, не были додуманы или заменены вопросами извне. В список включены вопросы, которые удалось достоверно извлечь."}];
+const CATEGORIES = ["Узнать друг друга лучше", "Детство, семья и прошлое", "Жизнь, ценности, мечты и интересы", "Любовь и чувства", "Общение, поддержка и конфликты", "Наша пара, совместная жизнь и будущее", "Ревность, границы и измена", "Близость и 18+", "Лёгкие, игровые и неожиданные вопросы", "Отношения и ожидания от партнёра", "Личные, глубокие и уязвимые вопросы"];
+const NAMES = ["Ира","Полина"];
+const AVATAR_EMOJIS = ["🐣","🌸","🍒","🦊","🐝","🌙","🍑","🦋","🍓","🐚","🌻","🍯","🐇","🌊","🍬","⭐","🐬","🍋","🦢","🍄","🌼","🐨","🍀","🎀"];
+
+const REACTIONS = {
+  before: ["Ну давай, рассказывай 👀","Только честно, ладно?","Кто-то сейчас будет думать дольше, чем надо 🤔","Ответ не заберёшь обратно, так что думай","Спойлер: партнёр тоже немного нервничает","Это база. Или нет?","Погнали, тут не страшно","*хрустит пальцами* поехали"],
+  waiting: ["Ответ улетел. Ждём вторую половину 🚀","Партнёр пока думает... или прокрастинирует","Сохранено. Секретность уровня ЦРУ 🕵️","Тссс, никому не покажем, пока не ответят оба","Ожидание — тоже часть отношений","Ответ есть, интрига тоже","Подожди, драма впереди"],
+  match: ["Вы серьёзно сговорились? 😳","Одна голова, два тела, все дела","Телепатия подтверждена ✅","Как вы вообще так совпадаете","Это уже подозрительно мило","Синхронизация 100%"],
+  contrast: ["Вот это уже интересно","Как вы вообще живёте вместе? 😂","Противоположности, значит, притягиваются","Ну хоть с этим разобрались","Кто-то удивлён, кто-то не очень","Разные ответы — тоже ответ","Обсудить это стоит за чаем ☕"],
+  memory: ["Ещё одна страница вашей вселенной 💛","Сохранили. Будущие вы скажут спасибо","Архив пары пополнен","Это точно войдёт в историю (вашу)"]
+};
+function pick(arr){return arr[Math.floor(Math.random()*arr.length)];}
+function norm(s){return (s||"").toLowerCase().trim().replace(/[.,!?ё"'«»\-–—\s]+/g," ").trim().replace(/ё/g,"е");}
+
+/* ============ STORAGE HELPERS ============ */
+async function sGet(key, shared){
+  try{ const r = await window.storage.get(key, !!shared); return r ? JSON.parse(r.value) : null; }
+  catch(e){ return null; }
+}
+async function sSet(key, value, shared){
+  try{ await window.storage.set(key, JSON.stringify(value), !!shared); return true; }
+  catch(e){ return false; }
+}
+
+/* ============ STATE ============ */
+let state = {
+  identity: null,        // 'Ира' | 'Полина'
+  tab: 'home',           // home | questions | memories(inside 'us') | us | more
+  view: null,            // sub-view stack info
+  customQuestions: [],
+  answers: {},           // key `${qid}:${name}` -> {text, createdAt}
+  memories: [],
+  profiles: {},          // name -> {avatar}
+  pairMeta: {createdAt: null},
+  metaMemeCount: 0,
+  activityLog: [],
+  lastSeenActivity: 0,
+  loaded: false,
+  toast: null,
+  openCategory: null,
+  activeQuestionId: null,
+  addTab: 'manual',
+  genTheme: '',
+  genLoading: false,
+  genResults: [],
+  genError: null,
+  showAvatarPicker: null,
+  showAddMemory: false,
+  memDraft: {date: '', text: '', photo: null},
+};
+
+function allQuestions(){ return BASE_QUESTIONS.concat(state.customQuestions); }
+function qById(id){ return allQuestions().find(q => q.id === id); }
+function answerKey(qid, name){ return 'answer:'+qid+':'+name; }
+function myAnswer(qid){ return state.answers[answerKey(qid, state.identity)] || null; }
+function partnerName(){ return state.identity === 'Ира' ? 'Полина' : 'Ира'; }
+function partnerAnswer(qid){ return state.answers[answerKey(qid, partnerName())] || null; }
+function bothAnswered(qid){ return !!myAnswer(qid) && !!partnerAnswer(qid); }
+function statusOf(qid){
+  const a = !!myAnswer(qid), b = !!partnerAnswer(qid);
+  if(a && b) return 'both';
+  if(a || b) return 'one';
+  return 'none';
+}
+function questionOfDay(){
+  const d = new Date();
+  const dayKey = d.getFullYear()*10000 + (d.getMonth()+1)*100 + d.getDate();
+  const idx = dayKey % BASE_QUESTIONS.length;
+  return BASE_QUESTIONS[idx];
+}
+function showToast(msg){
+  state.toast = msg;
+  render();
+  setTimeout(()=>{ state.toast = null; render(); }, 2600);
+}
+
+/* ============ LOAD / SYNC ============ */
+async function loadAll(){
+  const [custom, memories, pIra, pPolina, pairMeta, memeCount, activity] = await Promise.all([
+    sGet('custom_questions', true),
+    sGet('memories', true),
+    sGet('profile:Ира', true),
+    sGet('profile:Полина', true),
+    sGet('pair:meta', true),
+    sGet('stats_meme_count', true),
+    sGet('activity_log', true),
+  ]);
+  state.customQuestions = custom || [];
+  state.memories = memories || [];
+  state.profiles = {'Ира': pIra || {avatar:'🍒'}, 'Полина': pPolina || {avatar:'🌸'}};
+  state.metaMemeCount = memeCount || 0;
+  state.activityLog = activity || [];
+  if(!pairMeta){
+    state.pairMeta = {createdAt: Date.now()};
+    await sSet('pair:meta', state.pairMeta, true);
+  } else {
+    state.pairMeta = pairMeta;
+  }
+  // load all answers for all questions (base + custom)
+  const qs = allQuestions();
+  const keys = [];
+  qs.forEach(q => { NAMES.forEach(n => keys.push(answerKey(q.id, n))); });
+  const results = await Promise.all(keys.map(k => sGet(k, true)));
+  const ans = {};
+  keys.forEach((k,i) => { if(results[i]) ans[k] = results[i]; });
+  state.answers = ans;
+  state.loaded = true;
+}
+
+let pollTimer = null;
+function startPolling(){
+  if(pollTimer) return;
+  pollTimer = setInterval(async ()=>{
+    const before = JSON.stringify({a:state.answers,c:state.customQuestions,m:state.memories,p:state.profiles,f:state.activityLog});
+    await loadAll();
+    const after = JSON.stringify({a:state.answers,c:state.customQuestions,m:state.memories,p:state.profiles,f:state.activityLog});
+    if(before !== after) render();
+  }, 4000);
+}
+
+async function pushActivity(evt){
+  const item = Object.assign({id:'e'+Date.now()+Math.floor(Math.random()*999), createdAt: Date.now()}, evt);
+  const list = [item].concat(state.activityLog).slice(0, 60);
+  state.activityLog = list;
+  await sSet('activity_log', list, true);
+}
+function unreadCount(){
+  return state.activityLog.filter(e => e.actor !== state.identity && e.createdAt > (state.lastSeenActivity||0)).length;
+}
+async function markFeedSeen(){
+  state.lastSeenActivity = Date.now();
+  await sSet('last_seen:'+state.identity, state.lastSeenActivity, false);
+}
+
+/* ============ ACTIONS ============ */
+async function submitAnswer(qid, text){
+  if(!text || !text.trim()) return;
+  const key = answerKey(qid, state.identity);
+  const val = {text: text.trim(), createdAt: Date.now()};
+  state.answers[key] = val;
+  await sSet(key, val, true);
+  const q = qById(qid);
+  await pushActivity({type:'answer', actor: state.identity, qid, qtext: q ? q.text : ''});
+  render();
+  if(bothAnswered(qid)){
+    const cnt = (state.metaMemeCount||0)+1;
+    state.metaMemeCount = cnt;
+    sSet('stats_meme_count', cnt, true);
+  }
+}
+
+async function addCustomQuestion(text, cat){
+  if(!text || !text.trim()) return;
+  const id = 'c'+Date.now()+Math.floor(Math.random()*999);
+  const q = {id, cat: cat || 'Своё', text: text.trim(), addedBy: state.identity, addedAt: Date.now()};
+  const list = state.customQuestions.concat([q]);
+  state.customQuestions = list;
+  await sSet('custom_questions', list, true);
+  await pushActivity({type:'question', actor: state.identity, qid: id, qtext: q.text, cat: q.cat});
+  render();
+  showToast('Вопрос добавлен в ваш банк ✨');
+}
+
+async function addMemory(entry){
+  const item = Object.assign({id:'m'+Date.now(), author: state.identity, createdAt: Date.now()}, entry);
+  const list = [item].concat(state.memories);
+  state.memories = list;
+  await sSet('memories', list, true);
+  await pushActivity({type:'memory', actor: state.identity, memText: entry.text});
+  render();
+  showToast(pick(REACTIONS.memory));
+}
+
+async function setAvatar(name, emoji){
+  state.profiles[name] = {avatar: emoji};
+  await sSet('profile:'+name, {avatar: emoji}, true);
+  state.showAvatarPicker = null;
+  render();
+}
+
+/* ============ GENERATOR (Claude API) ============ */
+async function runGenerator(){
+  if(!state.genTheme.trim()) return;
+  state.genLoading = true; state.genError = null; state.genResults = [];
+  render();
+  try{
+    const resp = await fetch("https://api.anthropic.com/v1/messages", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        model:"claude-sonnet-4-6",
+        max_tokens:700,
+        messages:[{role:"user", content:
+          "Придумай 5 глубоких, живых вопросов для пары друг другу на тему: \""+state.genTheme.trim()+"\". "+
+          "Вопросы на русском языке, без нумерации, не банальные, разного тона (можно один-два с лёгким юмором). "+
+          "Ответь СТРОГО в формате JSON-массива строк, без markdown, без пояснений, например: [\"Вопрос один?\",\"Вопрос два?\"]"
+        }]
+      })
+    });
+    const data = await resp.json();
+    let text = (data.content||[]).map(b=>b.text||"").join("");
+    text = text.trim().replace(/^```json/,'').replace(/^```/,'').replace(/```$/,'').trim();
+    const arr = JSON.parse(text);
+    state.genResults = Array.isArray(arr) ? arr.filter(x=>typeof x==='string') : [];
+    if(state.genResults.length === 0) state.genError = "Не получилось придумать вопросы. Попробуй другую формулировку темы.";
+  }catch(e){
+    state.genError = "Генератор сейчас недоступен (нет сети или сбой). Можно добавить вопрос вручную.";
+  }
+  state.genLoading = false;
+  render();
+}
+
+/* ============ PHOTO COMPRESSION ============ */
+function readAndCompress(file){
+  return new Promise((resolve)=>{
+    const reader = new FileReader();
+    reader.onload = (e)=>{
+      const img = new Image();
+      img.onload = ()=>{
+        const maxW = 900;
+        const scale = Math.min(1, maxW/img.width);
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width*scale;
+        canvas.height = img.height*scale;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img,0,0,canvas.width,canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', 0.72));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ============ RENDER HELPERS ============ */
+function esc(s){ const d=document.createElement('div'); d.innerText = s==null?'':s; return d.innerHTML; }
+
+function avatarHtml(name, size){
+  const em = (state.profiles[name] && state.profiles[name].avatar) || '🙂';
+  return '<div class="avatar '+(size||'')+'">'+em+'</div>';
+}
+
+function bottomNavHtml(){
+  const items = [
+    {id:'home', ic:'⌂', lb:'Главная'},
+    {id:'questions', ic:'?', lb:'Вопросы'},
+    {id:'us', ic:'♡', lb:'Мы'},
+    {id:'more', ic:'≡', lb:'Ещё'},
+  ];
+  return '<div class="bottomnav">' + items.map(it =>
+    '<button class="nav-item '+(state.tab===it.id?'active':'')+'" onclick="goTab(\''+it.id+'\')">'+
+    '<span class="ic">'+it.ic+'</span><span class="lb">'+it.lb+'</span></button>'
+  ).join('') + '</div>';
+}
+
+function toastHtml(){
+  if(!state.toast) return '';
+  return '<div class="toast">'+esc(state.toast)+'</div>';
+}
+
+/* ============ SCREENS ============ */
+function screenOnboarding(){
+  return '<div class="onb-wrap">'+
+    '<div class="onb-logo">А ты? ♡</div>'+
+    '<div class="onb-sub">Ваше личное пространство вопросов и воспоминаний</div>'+
+    '<div class="who-grid">'+
+      NAMES.map(n => '<button class="who-card" onclick="chooseIdentity(\''+n+'\')">'+
+        '<div class="em">'+((state.profiles[n]&&state.profiles[n].avatar)||'🙂')+'</div>'+
+        '<div class="nm">Я — '+n+'</div></button>').join('')+
+    '</div>'+
+    '<div class="muted" style="text-align:center;margin-top:22px;">Это упрощённый вход без пароля — только для вас двоих на этом устройстве.</div>'+
+  '</div>';
+}
+
+function screenHome(){
+  const answeredBoth = allQuestions().filter(q=>bothAnswered(q.id)).length;
+  const matches = allQuestions().filter(q=>bothAnswered(q.id) && norm(myAnswer(q.id).text)===norm(partnerAnswer(q.id).text)).length;
+  const qotd = questionOfDay();
+  const qotdStatus = statusOf(qotd.id);
+  let qotdLine = 'Ещё не отвечали — загляни 👀';
+  if(qotdStatus==='one') qotdLine = myAnswer(qotd.id) ? 'Ты ответил(а). Ждём '+partnerName() : partnerName()+' уже ответил(а). Твоя очередь!';
+  if(qotdStatus==='both') qotdLine = 'Оба ответили — можно сравнить ответы';
+
+  const unread = unreadCount();
+  return '<div class="screen">'+
+    '<div class="hero">'+
+      '<button class="bell-btn" onclick="goView(\'feed\')">🔔'+(unread>0?'<span class="bell-badge">'+(unread>9?'9+':unread)+'</span>':'')+'</button>'+
+      '<h1 class="hero-title">Ира + Полина</h1>'+
+      '<div class="hero-sub">ваша маленькая вселенная</div>'+
+      '<div class="avatars"><div class="avatar-stack">'+
+        '<div class="avatar">'+((state.profiles['Ира']&&state.profiles['Ира'].avatar)||'🍒')+'</div>'+
+        '<div class="avatar">'+((state.profiles['Полина']&&state.profiles['Полина'].avatar)||'🌸')+'</div>'+
+      '</div></div>'+
+      '<div class="stat-strip">'+
+        '<div class="stat-chip"><b>'+answeredBoth+'</b><span>ответов раскрыто</span></div>'+
+        '<div class="stat-chip"><b>'+matches+'</b><span>совпадений</span></div>'+
+        '<div class="stat-chip"><b>'+state.memories.length+'</b><span>воспоминаний</span></div>'+
+      '</div>'+
+    '</div>'+
+
+    '<div class="qotd-card" onclick="openQuestion('+qotd.id+')">'+
+      '<div class="qotd-eyebrow">Вопрос дня</div>'+
+      '<div class="qotd-text">'+esc(qotd.text)+'</div>'+
+      '<div class="qotd-status">'+esc(qotdLine)+'</div>'+
+    '</div>'+
+
+    '<div class="quick-grid">'+
+      '<button class="quick-tile" onclick="goTab(\'questions\')"><div class="ic">📚</div><div class="lb">Все вопросы</div><div class="ct">'+allQuestions().length+' в банке</div></button>'+
+      '<button class="quick-tile" onclick="goView(\'answers\')"><div class="ic">🗂️</div><div class="lb">Наши ответы</div><div class="ct">'+answeredBoth+' раскрыто</div></button>'+
+      '<button class="quick-tile" onclick="goView(\'memories\')"><div class="ic">📸</div><div class="lb">Воспоминания</div><div class="ct">'+state.memories.length+' записей</div></button>'+
+      '<button class="quick-tile" onclick="goView(\'add\')"><div class="ic">✏️</div><div class="lb">Добавить вопрос</div><div class="ct">свой или сгенерировать</div></button>'+
+    '</div>'+
+  '</div>';
+}
+
+function categoryProgress(cat){
+  const qs = allQuestions().filter(q=>q.cat===cat);
+  const done = qs.filter(q=>bothAnswered(q.id)).length;
+  return {done, total: qs.length};
+}
+
+function screenQuestions(){
+  const cats = CATEGORIES.concat(state.customQuestions.some(q=>q.cat==='Своё')?['Своё']:[]).concat(
+    Array.from(new Set(state.customQuestions.map(q=>q.cat))).filter(c=>c!=='Своё' && !CATEGORIES.includes(c))
+  );
+  const uniqCats = Array.from(new Set(cats));
+  return '<div class="screen">'+
+    '<h2 style="margin:6px 0 14px;">Вопросы</h2>'+
+    uniqCats.map(cat => {
+      const p = categoryProgress(cat);
+      const open = state.openCategory === cat;
+      const qs = allQuestions().filter(q=>q.cat===cat);
+      return '<div class="cat-card">'+
+        '<button class="cat-head" style="width:100%;" onclick="toggleCategory('+"'"+cat.replace(/'/g,"\\'")+"'"+')">'+
+          '<div style="flex:1;text-align:left;">'+
+            '<div class="cat-name">'+esc(cat)+'</div>'+
+            '<div class="cat-progress-wrap"><div class="cat-progress" style="width:'+(p.total?Math.round(p.done/p.total*100):0)+'%"></div></div>'+
+            '<div class="cat-count">'+p.done+' / '+p.total+' раскрыто</div>'+
+          '</div>'+
+          '<div class="chev">'+(open?'▲':'▼')+'</div>'+
+        '</button>'+
+        (open ? '<div class="cat-body">'+qs.map(q=>{
+          const st = statusOf(q.id);
+          return '<button class="q-row" style="width:100%;text-align:left;" onclick="openQuestion('+q.id+')">'+
+            '<div class="status-dot '+st+'"></div>'+
+            '<div class="q-row-text">'+esc(q.text)+'</div>'+
+          '</button>';
+        }).join('') + '</div>' : '')+
+      '</div>';
+    }).join('')+
+  '</div>';
+}
+
+function screenQuestionDetail(){
+  const q = qById(state.activeQuestionId);
+  if(!q) return '<div class="screen"><div class="empty-state">Вопрос не найден</div></div>';
+  const st = statusOf(q.id);
+  let body = '';
+  if(st === 'both'){
+    const mine = myAnswer(q.id), theirs = partnerAnswer(q.id);
+    const isMatch = norm(mine.text) === norm(theirs.text);
+    body = '<div class="sticker '+(isMatch?'':'pink')+'">'+ (isMatch? pick(REACTIONS.match) : pick(REACTIONS.contrast)) +'</div>'+
+      '<div class="answers-compare">'+
+        [ [state.identity, mine], [partnerName(), theirs] ].map(([name,a])=>
+          '<div class="answer-card '+(isMatch?'match':'')+'">'+
+            '<div class="who">'+avatarHtml(name,'small')+' '+esc(name)+'</div>'+
+            '<div class="txt">'+esc(a.text)+'</div>'+
+          '</div>'
+        ).join('')+
+      '</div>';
+  } else if(myAnswer(q.id) && !partnerAnswer(q.id)){
+    body = '<div class="waiting-box"><div class="big">🕰️</div><div style="margin-top:6px;font-weight:700;">'+pick(REACTIONS.waiting)+'</div>'+
+      '<div class="muted" style="margin-top:6px;">Твой ответ сохранён. Как только ответит '+partnerName()+' — увидите оба.</div></div>';
+  } else if(!myAnswer(q.id) && partnerAnswer(q.id)){
+    body = '<div class="waiting-box"><div class="big">👀</div><div style="margin-top:6px;font-weight:700;">'+partnerName()+' уже ответил(а)</div>'+
+      '<div class="muted" style="margin-top:6px;">Ответ скрыт, пока не ответишь ты.</div></div>'+
+      '<textarea class="answer-input" id="answerBox" placeholder="Твой ответ..."></textarea>'+
+      '<button class="primary-btn" onclick="submitAnswerFromBox('+q.id+')">Ответить</button>';
+  } else {
+    body = '<div class="sticker">'+pick(REACTIONS.before)+'</div>'+
+      '<textarea class="answer-input" id="answerBox" placeholder="Твой ответ..."></textarea>'+
+      '<button class="primary-btn" onclick="submitAnswerFromBox('+q.id+')">Ответить</button>';
+  }
+  return '<div class="screen">'+
+    '<button class="back-btn" onclick="goBack()">←</button>'+
+    '<div class="q-detail-card" style="margin-top:14px;">'+
+      '<div class="q-cat-tag">'+esc(q.cat)+'</div>'+
+      '<div class="q-detail-text">'+esc(q.text)+'</div>'+
+      body+
+    '</div>'+
+  '</div>';
+}
+
+function timeAgo(ts){
+  const diff = Math.max(0, Date.now()-ts);
+  const m = Math.floor(diff/60000);
+  if(m < 1) return 'только что';
+  if(m < 60) return m+' мин назад';
+  const h = Math.floor(m/60);
+  if(h < 24) return h+' ч назад';
+  const d = Math.floor(h/24);
+  if(d < 7) return d+' дн назад';
+  return new Date(ts).toLocaleDateString('ru-RU');
+}
+function feedEventLine(e){
+  if(e.type === 'answer') return {ic:'✍️', txt:'<b>'+esc(e.actor)+'</b> ответил(а) на вопрос «'+esc(e.qtext||'')+'»'};
+  if(e.type === 'question') return {ic:'➕', txt:'<b>'+esc(e.actor)+'</b> добавил(а) новый вопрос «'+esc(e.qtext||'')+'»'+(e.cat?' в категорию '+esc(e.cat):'')};
+  if(e.type === 'memory') return {ic:'📸', txt:'<b>'+esc(e.actor)+'</b> добавил(а) воспоминание'};
+  return {ic:'✨', txt:'<b>'+esc(e.actor)+'</b> что-то сделал(а)'};
+}
+function screenFeed(){
+  const events = state.activityLog;
+  return '<div class="screen">'+
+    '<button class="back-btn" onclick="goBack()">←</button>'+
+    '<h2 style="margin:14px 0 6px;">Лента</h2>'+
+    '<div class="muted" style="margin-bottom:10px;">Что происходило у вас двоих</div>'+
+    '<div class="card-plain">'+
+    (events.length===0 ? '<div class="empty-state"><div class="em">🔔</div>Пока тихо. Как только кто-то ответит на вопрос, добавит вопрос или воспоминание — здесь появится запись.</div>' :
+      events.map(e=>{
+        const {ic,txt} = feedEventLine(e);
+        const isUnread = e.actor !== state.identity && e.createdAt > (state.lastSeenActivity||0);
+        const clickable = e.type==='answer' || e.type==='question';
+        const onclickAttr = clickable ? ' onclick="openQuestion('+e.qid+')" style="cursor:pointer;"' : '';
+        return '<div class="feed-item '+(isUnread?'unread':'')+'"'+onclickAttr+'>'+
+          '<div class="feed-ic">'+ic+'</div>'+
+          '<div><div class="feed-txt">'+txt+'</div><div class="feed-time">'+timeAgo(e.createdAt)+'</div></div>'+
+        '</div>';
+      }).join('')
+    )+
+    '</div>'+
+  '</div>';
+}
+
+function screenAnswersHistory(){
+  const items = allQuestions().filter(q=>bothAnswered(q.id)).sort((a,b)=>{
+    const ta = Math.max(myAnswer(a.id).createdAt, partnerAnswer(a.id).createdAt);
+    const tb = Math.max(myAnswer(b.id).createdAt, partnerAnswer(b.id).createdAt);
+    return tb - ta;
+  });
+  return '<div class="screen">'+
+    '<button class="back-btn" onclick="goBack()">←</button>'+
+    '<h2 style="margin:14px 0 14px;">Наши ответы</h2>'+
+    (items.length===0 ? '<div class="empty-state"><div class="em">🗂️</div>Пока пусто. Ответьте вместе хотя бы на один вопрос — он появится здесь навсегда.</div>' :
+      items.map(q=>{
+        const mine=myAnswer(q.id), theirs=partnerAnswer(q.id);
+        const isMatch = norm(mine.text)===norm(theirs.text);
+        return '<button class="card-plain" style="width:100%;text-align:left;" onclick="openQuestion('+q.id+')">'+
+          '<div class="q-cat-tag">'+esc(q.cat)+'</div>'+
+          '<div style="font-weight:700;font-size:14.5px;margin:6px 0;">'+esc(q.text)+'</div>'+
+          '<div class="muted">'+(isMatch?'✨ Совпало':'Разные ответы')+'</div>'+
+        '</button>';
+      }).join('')
+    )+
+  '</div>';
+}
+
+function screenMemories(){
+  return '<div class="screen">'+
+    '<button class="back-btn" onclick="goBack()">←</button>'+
+    '<h2 style="margin:14px 0 14px;">Воспоминания</h2>'+
+    (state.memories.length===0 ? '<div class="empty-state"><div class="em">📸</div>Здесь будет ваш цифровой дневник. Добавьте первое воспоминание.</div>' :
+      state.memories.map(m=>
+        '<div class="mem-card">'+
+          '<div class="mem-head">'+avatarHtml(m.author,'small')+'<span class="mem-who">'+esc(m.author)+'</span>'+
+          '<span class="mem-date">'+esc(m.date||'')+'</span></div>'+
+          '<div class="mem-text">'+esc(m.text)+'</div>'+
+          (m.photo?'<img class="mem-photo" src="'+m.photo+'">':'')+
+        '</div>'
+      ).join('')
+    )+
+    '<button class="fab" onclick="openAddMemory()">+</button>'+
+  '</div>';
+}
+
+function screenAddMemory(){
+  return '<div class="screen">'+
+    '<button class="back-btn" onclick="closeAddMemory()">←</button>'+
+    '<h2 style="margin:14px 0 6px;">Новое воспоминание</h2>'+
+    '<div class="field-label">Дата</div>'+
+    '<input class="text-input" type="date" id="memDate" value="'+(state.memDraft.date||new Date().toISOString().slice(0,10))+'">'+
+    '<div class="field-label">Заметка</div>'+
+    '<textarea class="answer-input" id="memText" placeholder="Что произошло?">'+esc(state.memDraft.text)+'</textarea>'+
+    '<div class="field-label">Фото (необязательно)</div>'+
+    '<input class="text-input" type="file" accept="image/*" id="memPhoto">'+
+    (state.memDraft.photo ? '<img class="mem-photo" src="'+state.memDraft.photo+'" style="margin-top:10px;">' : '')+
+    '<button class="primary-btn" onclick="saveMemoryDraft()">Сохранить</button>'+
+  '</div>';
+}
+
+function screenAdd(){
+  return '<div class="screen">'+
+    '<button class="back-btn" onclick="goBack()">←</button>'+
+    '<h2 style="margin:14px 0 6px;">Добавить вопрос</h2>'+
+    '<div class="tabs">'+
+      '<button class="tab-btn '+(state.addTab==='manual'?'active':'')+'" onclick="setAddTab(\'manual\')">Своими руками</button>'+
+      '<button class="tab-btn '+(state.addTab==='gen'?'active':'')+'" onclick="setAddTab(\'gen\')">Генератор</button>'+
+    '</div>'+
+    (state.addTab==='manual' ? (
+      '<div class="field-label">Текст вопроса</div>'+
+      '<textarea class="answer-input" id="manualQText" placeholder="Например: Что тебе нравится в наших вечерах вдвоём?"></textarea>'+
+      '<div class="field-label">Категория</div>'+
+      '<select class="text-input" id="manualQCat">'+ CATEGORIES.map(c=>'<option value="'+esc(c)+'">'+esc(c)+'</option>').join('') + '<option value="Своё">Своё</option></select>'+
+      '<button class="primary-btn" onclick="submitManualQuestion()">Добавить в банк</button>'
+    ) : (
+      '<div class="field-label">Тема</div>'+
+      '<input class="text-input" id="genThemeInput" placeholder="Например: путешествия, будущее, детство" value="'+esc(state.genTheme)+'">'+
+      '<button class="primary-btn" onclick="triggerGenerate()" '+(state.genLoading?'disabled':'')+'>'+(state.genLoading?'Придумываю...':'Придумать вопросы')+'</button>'+
+      (state.genError ? '<div class="muted" style="margin-top:10px;color:var(--burgundy);">'+esc(state.genError)+'</div>' : '')+
+      (state.genResults.length ? '<div class="chip-list">'+ state.genResults.map((t,i)=>
+        '<div class="chip"><span>'+esc(t)+'</span><button onclick="addGenerated('+i+')">+</button></div>'
+      ).join('') + '</div>' : '')
+    ))+
+  '</div>';
+}
+
+function screenUs(){
+  const answeredBoth = allQuestions().filter(q=>bothAnswered(q.id)).length;
+  const matches = allQuestions().filter(q=>bothAnswered(q.id) && norm(myAnswer(q.id).text)===norm(partnerAnswer(q.id).text)).length;
+  const days = state.pairMeta.createdAt ? Math.max(0, Math.floor((Date.now()-state.pairMeta.createdAt)/86400000)) : 0;
+  return '<div class="screen">'+
+    '<div class="profile-head">'+
+      '<div class="hero-title" style="color:var(--burgundy);">Ира + Полина</div>'+
+      '<div class="hero-sub" style="color:var(--graphite-soft);">ваша маленькая вселенная · '+days+' дн. вместе в приложении</div>'+
+      '<div class="avatar-row">'+
+        NAMES.map(n => '<div class="avatar-col"><button onclick="toggleAvatarPicker(\''+n+'\')">'+avatarHtml(n,'big')+'</button><div class="nm">'+n+'</div></div>').join('')+
+      '</div>'+
+    '</div>'+
+    (state.showAvatarPicker ? (
+      '<div class="emoji-pop">'+ AVATAR_EMOJIS.map(e=>'<button class="emoji-opt" onclick="setAvatarPick(\''+e+'\')">'+e+'</button>').join('') + '</div>'
+    ) : '')+
+    '<div class="stats-grid">'+
+      '<div class="stat-box"><b>'+answeredBoth+'</b><span>вопросов раскрыто</span></div>'+
+      '<div class="stat-box"><b>'+matches+'</b><span>совпадений</span></div>'+
+      '<div class="stat-box"><b>'+state.memories.length+'</b><span>воспоминаний</span></div>'+
+      '<div class="stat-box"><b>'+state.metaMemeCount+'</b><span>собрано реакций</span></div>'+
+      '<div class="stat-box"><b>'+state.customQuestions.length+'</b><span>своих вопросов</span></div>'+
+      '<div class="stat-box"><b>'+allQuestions().length+'</b><span>вопросов в банке</span></div>'+
+    '</div>'+
+    '<div class="muted" style="text-align:center;margin-top:16px;">Статистика общая для пары — здесь никто не соревнуется 💛</div>'+
+  '</div>';
+}
+
+function screenMore(){
+  return '<div class="screen">'+
+    '<h2 style="margin:6px 0 16px;">Ещё</h2>'+
+    '<div class="card-plain">'+
+      '<div class="row-between"><div><b>Ты сейчас:</b> '+esc(state.identity)+'</div><button class="secondary-btn" style="width:auto;margin:0;padding:8px 14px;" onclick="switchIdentity()">Сменить</button></div>'+
+    '</div>'+
+    '<div class="card-plain">'+
+      '<b>О приложении</b>'+
+      '<div class="muted" style="margin-top:6px;">«А ты? ♡» — личный банк вопросов и воспоминаний для Иры и Полины. Ответы скрыты, пока не ответят обе. Данные синхронизируются между устройствами (обновление раз в несколько секунд).</div>'+
+    '</div>'+
+    '<div class="card-plain">'+
+      '<b>Банк вопросов</b>'+
+      '<div class="muted" style="margin-top:6px;">'+BASE_QUESTIONS.length+' вопросов из исходного списка + '+state.customQuestions.length+' добавленных вами.</div>'+
+    '</div>'+
+  '</div>';
+}
+
+/* ============ MASTER RENDER ============ */
+function render(){
+  const app = document.getElementById('app');
+  if(!state.loaded){
+    app.innerHTML = '<div class="onb-wrap"><div class="onb-logo">А ты? ♡</div><div class="onb-sub" style="margin-top:14px;">Загружаем ваше пространство...</div></div>';
+    return;
+  }
+  if(!state.identity){
+    app.innerHTML = screenOnboarding();
+    return;
+  }
+  let html = '';
+  if(state.view === 'qdetail') html = screenQuestionDetail();
+  else if(state.view === 'feed') html = screenFeed();
+  else if(state.view === 'answers') html = screenAnswersHistory();
+  else if(state.view === 'memories') html = state.showAddMemory ? screenAddMemory() : screenMemories();
+  else if(state.view === 'add') html = screenAdd();
+  else if(state.tab === 'home') html = screenHome();
+  else if(state.tab === 'questions') html = screenQuestions();
+  else if(state.tab === 'us') html = screenUs();
+  else if(state.tab === 'more') html = screenMore();
+
+  const showNav = !state.view;
+  app.innerHTML = html + (showNav ? bottomNavHtml() : '') + toastHtml();
+}
+
+/* ============ NAV ACTIONS ============ */
+function goTab(tab){ state.tab = tab; state.view=null; state.openCategory=null; render(); }
+function goView(v){
+  state.view = v;
+  render();
+  if(v === 'feed'){ markFeedSeen().then(render); }
+}
+function goBack(){ state.view = null; state.showAddMemory=false; render(); }
+function openQuestion(id){ state.activeQuestionId = id; state.view='qdetail'; render(); }
+function toggleCategory(cat){ state.openCategory = state.openCategory===cat ? null : cat; render(); }
+async function chooseIdentity(name){
+  state.identity = name;
+  await sSet('identity', name, false);
+  const seen = await sGet('last_seen:'+name, false);
+  state.lastSeenActivity = seen || 0;
+  render();
+  startPolling();
+}
+function switchIdentity(){
+  state.identity = null;
+  sSet('identity', null, false);
+  render();
+}
+function submitAnswerFromBox(qid){
+  const box = document.getElementById('answerBox');
+  if(!box) return;
+  submitAnswer(qid, box.value);
+}
+function setAddTab(t){ state.addTab = t; render(); }
+function submitManualQuestion(){
+  const t = document.getElementById('manualQText').value;
+  const c = document.getElementById('manualQCat').value;
+  addCustomQuestion(t, c);
+}
+function triggerGenerate(){
+  state.genTheme = document.getElementById('genThemeInput').value;
+  runGenerator();
+}
+function addGenerated(i){
+  const text = state.genResults[i];
+  addCustomQuestion(text, 'Сгенерированные');
+  state.genResults = state.genResults.filter((_,idx)=>idx!==i);
+  render();
+}
+function openAddMemory(){ state.showAddMemory = true; state.memDraft = {date:'',text:'',photo:null}; render(); }
+function closeAddMemory(){ state.showAddMemory = false; render(); }
+async function saveMemoryDraft(){
+  const date = document.getElementById('memDate').value;
+  const text = document.getElementById('memText').value;
+  const fileInput = document.getElementById('memPhoto');
+  let photo = null;
+  if(fileInput && fileInput.files && fileInput.files[0]){
+    photo = await readAndCompress(fileInput.files[0]);
+  }
+  if(!text || !text.trim()){ showToast('Добавь текст заметки'); return; }
+  await addMemory({date, text: text.trim(), photo});
+  state.showAddMemory = false;
+  render();
+}
+function toggleAvatarPicker(name){ state.showAvatarPicker = state.showAvatarPicker===name ? null : name; render(); }
+function setAvatarPick(emoji){ setAvatar(state.showAvatarPicker, emoji); }
+
+/* ============ INIT ============ */
+(async function init(){
+  await loadAll();
+  const savedIdentity = await sGet('identity', false);
+  state.identity = savedIdentity || null;
+  if(state.identity){
+    const seen = await sGet('last_seen:'+state.identity, false);
+    state.lastSeenActivity = seen || 0;
+  }
+  render();
+  if(state.identity) startPolling();
+})();
+</script>
+</body>
+</html>
