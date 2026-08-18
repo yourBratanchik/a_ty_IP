@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
   --milk:#FBF6EC;
@@ -230,6 +231,9 @@ input.text-input, select.text-input{
 }
 .card-plain{background:var(--white);border-radius:18px;padding:16px;box-shadow:var(--shadow);border:1.5px solid var(--line);margin-bottom:12px;}
 .overlay-close{position:fixed;top:16px;right:16px;}
+.setup-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:30px;}
+.setup-card{background:var(--white);border-radius:22px;padding:26px;max-width:420px;box-shadow:var(--shadow-lift);border:1.5px solid var(--line);}
+.setup-card code{background:var(--milk-2);padding:2px 6px;border-radius:6px;font-size:12.5px;}
 
 /* ---------- Bell / Feed ---------- */
 .bell-btn{
@@ -272,15 +276,76 @@ const REACTIONS = {
 function pick(arr){return arr[Math.floor(Math.random()*arr.length)];}
 function norm(s){return (s||"").toLowerCase().trim().replace(/[.,!?ё"'«»\-–—\s]+/g," ").trim().replace(/ё/g,"е");}
 
-/* ============ STORAGE HELPERS ============ */
-async function sGet(key, shared){
-  try{ const r = await window.storage.get(key, !!shared); return r ? JSON.parse(r.value) : null; }
-  catch(e){ return null; }
+/* ============ SUPABASE CONFIG ============ */
+const SUPABASE_URL = "https://xiikvlfswpxzfzdlpiwo.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpaWt2bGZzd3B4emZ6ZGxwaXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY5OTU0OTQsImV4cCI6MjEwMjU3MTQ5NH0.-nkC-q4QxPl3y_epD_i7cviwkZnccBu7gZ3CIWgNDoQ";
+const supabaseReady = SUPABASE_URL.indexOf('__SUPABASE') !== 0 && SUPABASE_ANON_KEY.indexOf('__SUPABASE') !== 0;
+let sb = null;
+if(supabaseReady){ sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); }
+
+/* ============ SUPABASE DATA HELPERS ============ */
+async function fetchAnswers(){
+  const {data, error} = await sb.from('answers').select('*');
+  if(error){ console.error('fetchAnswers', error); return {}; }
+  const map = {};
+  (data||[]).forEach(r=>{ map[answerKey(r.qid, r.person)] = {text:r.text, createdAt: Number(r.created_at)}; });
+  return map;
 }
-async function sSet(key, value, shared){
-  try{ await window.storage.set(key, JSON.stringify(value), !!shared); return true; }
-  catch(e){ return false; }
+async function upsertAnswerRow(qid, person, text){
+  const row = {qid:String(qid), person, text, created_at: Date.now()};
+  const {error} = await sb.from('answers').upsert(row, {onConflict:'qid,person'});
+  if(error) console.error('upsertAnswerRow', error);
 }
+async function fetchCustomQuestions(){
+  const {data,error} = await sb.from('custom_questions').select('*').order('added_at',{ascending:true});
+  if(error){ console.error('fetchCustomQuestions', error); return []; }
+  return (data||[]).map(r=>({id:r.id, cat:r.cat, text:r.text, addedBy:r.added_by, addedAt:Number(r.added_at)}));
+}
+async function insertCustomQuestionRow(q){
+  const {error} = await sb.from('custom_questions').insert({id:q.id, cat:q.cat, text:q.text, added_by:q.addedBy, added_at:q.addedAt});
+  if(error) console.error('insertCustomQuestionRow', error);
+}
+async function fetchMemoriesRows(){
+  const {data,error} = await sb.from('memories').select('*').order('created_at',{ascending:false});
+  if(error){ console.error('fetchMemoriesRows', error); return []; }
+  return (data||[]).map(r=>({id:r.id, date:r.date, text:r.text, photo:r.photo, author:r.author, createdAt:Number(r.created_at)}));
+}
+async function insertMemoryRow(item){
+  const {error} = await sb.from('memories').insert({id:item.id, date:item.date, text:item.text, photo:item.photo, author:item.author, created_at:item.createdAt});
+  if(error) console.error('insertMemoryRow', error);
+}
+async function fetchProfilesRows(){
+  const map = {'Ира':{avatar:'🍒'}, 'Полина':{avatar:'🌸'}};
+  const {data,error} = await sb.from('profiles').select('*');
+  if(!error && data) data.forEach(r=>{ map[r.name] = {avatar:r.avatar}; });
+  return map;
+}
+async function upsertProfileRow(name, avatar){
+  const {error} = await sb.from('profiles').upsert({name, avatar}, {onConflict:'name'});
+  if(error) console.error('upsertProfileRow', error);
+}
+async function fetchActivityRows(){
+  const {data,error} = await sb.from('activity_log').select('*').order('created_at',{ascending:false}).limit(60);
+  if(error){ console.error('fetchActivityRows', error); return []; }
+  return (data||[]).map(r=>({id:r.id, type:r.type, actor:r.actor, qid:r.qid, qtext:r.qtext, cat:r.cat, memText:r.mem_text, createdAt:Number(r.created_at)}));
+}
+async function insertActivityRow(evt){
+  const row = {id:evt.id, type:evt.type, actor:evt.actor, qid: evt.qid!=null?String(evt.qid):null, qtext:evt.qtext||null, cat:evt.cat||null, mem_text:evt.memText||null, created_at:evt.createdAt};
+  const {error} = await sb.from('activity_log').insert(row);
+  if(error) console.error('insertActivityRow', error);
+}
+async function fetchMetaValue(key, fallback){
+  const {data,error} = await sb.from('meta').select('value').eq('key',key).maybeSingle();
+  if(error || !data) return fallback;
+  return data.value;
+}
+async function upsertMetaValue(key, value){
+  const {error} = await sb.from('meta').upsert({key, value}, {onConflict:'key'});
+  if(error) console.error('upsertMetaValue', error);
+}
+function lsGet(key){ try{ return localStorage.getItem(key); }catch(e){ return null; } }
+function lsSet(key, val){ try{ localStorage.setItem(key, val); }catch(e){} }
+function lsRemove(key){ try{ localStorage.removeItem(key); }catch(e){} }
 
 /* ============ STATE ============ */
 let state = {
@@ -310,7 +375,7 @@ let state = {
 };
 
 function allQuestions(){ return BASE_QUESTIONS.concat(state.customQuestions); }
-function qById(id){ return allQuestions().find(q => q.id === id); }
+function qById(id){ return allQuestions().find(q => String(q.id) === String(id)); }
 function answerKey(qid, name){ return 'answer:'+qid+':'+name; }
 function myAnswer(qid){ return state.answers[answerKey(qid, state.identity)] || null; }
 function partnerName(){ return state.identity === 'Ира' ? 'Полина' : 'Ира'; }
@@ -335,29 +400,44 @@ function showToast(msg){
 }
 
 /* ============ LOAD / SYNC ============ */
+function mergeAnswers(local, fetched){
+  const result = Object.assign({}, fetched||{});
+  Object.keys(local||{}).forEach(k=>{
+    const l = local[k], f = result[k];
+    if(l && (!f || l.createdAt >= f.createdAt)) result[k] = l;
+  });
+  return result;
+}
+function mergeByIdUnion(local, fetched){
+  const map = {};
+  (fetched||[]).forEach(x=>{ map[x.id]=x; });
+  (local||[]).forEach(x=>{ if(!map[x.id]) map[x.id]=x; });
+  return Object.values(map);
+}
+
 async function loadAll(){
-  const [custom, memories, pIra, pPolina, pairMeta, memeCount, activity, answersAll] = await Promise.all([
-    sGet('custom_questions', true),
-    sGet('memories', true),
-    sGet('profile:Ира', true),
-    sGet('profile:Полина', true),
-    sGet('pair:meta', true),
-    sGet('stats_meme_count', true),
-    sGet('activity_log', true),
-    sGet('answers_all', true),
+  const [custom, memories, profs, memeCount, activity, answersAll, pairCreated] = await Promise.all([
+    fetchCustomQuestions(),
+    fetchMemoriesRows(),
+    fetchProfilesRows(),
+    fetchMetaValue('meme_count', 0),
+    fetchActivityRows(),
+    fetchAnswers(),
+    fetchMetaValue('pair_created_at', null),
   ]);
-  state.customQuestions = custom || [];
-  state.memories = memories || [];
-  state.profiles = {'Ира': pIra || {avatar:'🍒'}, 'Полина': pPolina || {avatar:'🌸'}};
-  state.metaMemeCount = memeCount || 0;
-  state.activityLog = activity || [];
-  if(!pairMeta){
-    state.pairMeta = {createdAt: Date.now()};
-    await sSet('pair:meta', state.pairMeta, true);
+  state.customQuestions = mergeByIdUnion(state.customQuestions, custom || []);
+  state.memories = mergeByIdUnion(state.memories, memories || []).sort((a,b)=>b.createdAt-a.createdAt);
+  state.profiles = profs || state.profiles;
+  state.metaMemeCount = Math.max(memeCount || 0, state.metaMemeCount || 0);
+  state.activityLog = mergeByIdUnion(state.activityLog, activity || []).sort((a,b)=>b.createdAt-a.createdAt).slice(0,60);
+  if(!pairCreated){
+    const now = Date.now();
+    state.pairMeta = {createdAt: now};
+    await upsertMetaValue('pair_created_at', now);
   } else {
-    state.pairMeta = pairMeta;
+    state.pairMeta = {createdAt: pairCreated};
   }
-  state.answers = answersAll || {};
+  state.answers = mergeAnswers(state.answers, answersAll || {});
   state.loaded = true;
 }
 
@@ -369,21 +449,32 @@ function startPolling(){
     await loadAll();
     const after = JSON.stringify({a:state.answers,c:state.customQuestions,m:state.memories,p:state.profiles,f:state.activityLog});
     if(before !== after) render();
-  }, 4000);
+  }, 15000);
+}
+
+let realtimeChannel = null;
+function setupRealtime(){
+  if(!supabaseReady || realtimeChannel) return;
+  realtimeChannel = sb.channel('app-changes')
+    .on('postgres_changes', {event:'*', schema:'public', table:'answers'}, async()=>{ await loadAll(); render(); })
+    .on('postgres_changes', {event:'*', schema:'public', table:'custom_questions'}, async()=>{ await loadAll(); render(); })
+    .on('postgres_changes', {event:'*', schema:'public', table:'memories'}, async()=>{ await loadAll(); render(); })
+    .on('postgres_changes', {event:'*', schema:'public', table:'activity_log'}, async()=>{ await loadAll(); render(); })
+    .on('postgres_changes', {event:'*', schema:'public', table:'profiles'}, async()=>{ await loadAll(); render(); })
+    .subscribe();
 }
 
 async function pushActivity(evt){
   const item = Object.assign({id:'e'+Date.now()+Math.floor(Math.random()*999), createdAt: Date.now()}, evt);
-  const list = [item].concat(state.activityLog).slice(0, 60);
-  state.activityLog = list;
-  await sSet('activity_log', list, true);
+  state.activityLog = [item].concat(state.activityLog).slice(0, 60);
+  await insertActivityRow(item);
 }
 function unreadCount(){
   return state.activityLog.filter(e => e.actor !== state.identity && e.createdAt > (state.lastSeenActivity||0)).length;
 }
-async function markFeedSeen(){
+function markFeedSeen(){
   state.lastSeenActivity = Date.now();
-  await sSet('last_seen:'+state.identity, state.lastSeenActivity, false);
+  lsSet('last_seen:'+state.identity, String(state.lastSeenActivity));
 }
 
 /* ============ ACTIONS ============ */
@@ -391,17 +482,15 @@ async function submitAnswer(qid, text){
   if(!text || !text.trim()) return;
   const key = answerKey(qid, state.identity);
   const val = {text: text.trim(), createdAt: Date.now()};
-  const latest = await sGet('answers_all', true);
-  const merged = Object.assign({}, latest || {}, state.answers, {[key]: val});
-  state.answers = merged;
-  await sSet('answers_all', merged, true);
+  state.answers = Object.assign({}, state.answers, {[key]: val});
+  await upsertAnswerRow(qid, state.identity, val.text);
   const q = qById(qid);
   await pushActivity({type:'answer', actor: state.identity, qid, qtext: q ? q.text : ''});
   render();
   if(bothAnswered(qid)){
     const cnt = (state.metaMemeCount||0)+1;
     state.metaMemeCount = cnt;
-    sSet('stats_meme_count', cnt, true);
+    upsertMetaValue('meme_count', cnt);
   }
 }
 
@@ -409,9 +498,8 @@ async function addCustomQuestion(text, cat){
   if(!text || !text.trim()) return;
   const id = 'c'+Date.now()+Math.floor(Math.random()*999);
   const q = {id, cat: cat || 'Своё', text: text.trim(), addedBy: state.identity, addedAt: Date.now()};
-  const list = state.customQuestions.concat([q]);
-  state.customQuestions = list;
-  await sSet('custom_questions', list, true);
+  state.customQuestions = state.customQuestions.concat([q]);
+  await insertCustomQuestionRow(q);
   await pushActivity({type:'question', actor: state.identity, qid: id, qtext: q.text, cat: q.cat});
   render();
   showToast('Вопрос добавлен в ваш банк ✨');
@@ -419,9 +507,8 @@ async function addCustomQuestion(text, cat){
 
 async function addMemory(entry){
   const item = Object.assign({id:'m'+Date.now(), author: state.identity, createdAt: Date.now()}, entry);
-  const list = [item].concat(state.memories);
-  state.memories = list;
-  await sSet('memories', list, true);
+  state.memories = [item].concat(state.memories);
+  await insertMemoryRow(item);
   await pushActivity({type:'memory', actor: state.identity, memText: entry.text});
   render();
   showToast(pick(REACTIONS.memory));
@@ -429,7 +516,7 @@ async function addMemory(entry){
 
 async function setAvatar(name, emoji){
   state.profiles[name] = {avatar: emoji};
-  await sSet('profile:'+name, {avatar: emoji}, true);
+  await upsertProfileRow(name, emoji);
   state.showAvatarPicker = null;
   render();
 }
@@ -843,23 +930,26 @@ function render(){
 function goTab(tab){ state.tab = tab; state.view=null; state.openCategory=null; render(); }
 function goView(v){
   state.view = v;
+  if(v === 'feed'){ markFeedSeen(); }
   render();
-  if(v === 'feed'){ markFeedSeen().then(render); }
 }
 function goBack(){ state.view = null; state.showAddMemory=false; render(); }
 function openQuestion(id){ state.activeQuestionId = id; state.view='qdetail'; render(); }
 function toggleCategory(cat){ state.openCategory = state.openCategory===cat ? null : cat; render(); }
-async function chooseIdentity(name){
+function chooseIdentity(name){
   state.identity = name;
-  await sSet('identity', name, false);
-  const seen = await sGet('last_seen:'+name, false);
-  state.lastSeenActivity = seen || 0;
+  lsSet('identity', name);
+  const seen = lsGet('last_seen:'+name);
+  state.lastSeenActivity = seen ? parseInt(seen,10) : 0;
   render();
   startPolling();
+  setupRealtime();
 }
 function switchIdentity(){
   state.identity = null;
-  sSet('identity', null, false);
+  lsRemove('identity');
+  if(realtimeChannel){ sb.removeChannel(realtimeChannel); realtimeChannel = null; }
+  if(pollTimer){ clearInterval(pollTimer); pollTimer = null; }
   render();
 }
 function submitAnswerFromBox(qid){
@@ -903,15 +993,24 @@ function setAvatarPick(emoji){ setAvatar(state.showAvatarPicker, emoji); }
 
 /* ============ INIT ============ */
 (async function init(){
+  if(!supabaseReady){
+    document.getElementById('app').innerHTML =
+      '<div class="setup-wrap"><div class="setup-card">'+
+      '<h2 style="margin-top:0;">Почти готово ✨</h2>'+
+      '<p class="muted">В файл ещё не вставлены данные подключения к базе (Supabase URL и anon key). Без них приложение не сможет сохранять и синхронизировать данные.</p>'+
+      '<p class="muted">Если вы видите этот экран — сообщите об этом тому, кто настраивал приложение.</p>'+
+      '</div></div>';
+    return;
+  }
   await loadAll();
-  const savedIdentity = await sGet('identity', false);
+  const savedIdentity = lsGet('identity');
   state.identity = savedIdentity || null;
   if(state.identity){
-    const seen = await sGet('last_seen:'+state.identity, false);
-    state.lastSeenActivity = seen || 0;
+    const seen = lsGet('last_seen:'+state.identity);
+    state.lastSeenActivity = seen ? parseInt(seen,10) : 0;
   }
   render();
-  if(state.identity) startPolling();
+  if(state.identity){ startPolling(); setupRealtime(); }
 })();
 </script>
 </body>
